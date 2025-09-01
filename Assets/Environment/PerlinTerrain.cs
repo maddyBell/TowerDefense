@@ -1,60 +1,65 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-/*  Description: 
-
-This class is used to procedurally generate terrain. 
-It makes use of Perlin Noise, Terrain Data and height maps to lay out the map terrain */
-public class PerlinTerrain : MonoBehaviour
+public class ProceduralTerrain : MonoBehaviour
 {
-    //creating the initial variables and exposing them to the inspector
-
-    public int width = 256, height = 20, length = 256;
+    public int width = 64;
+    public int length = 64;
+    public int height = 20;
     public float scale = 20f;
+    public GameObject towerPrefab;
+
+    private Terrain terrain;
+    private float[,] heights;
+    private Path path;
 
     void Start()
     {
-        Terrain terrain = GetComponent<Terrain>();
-        terrain.terrainData = GenerateTerrain(terrain.terrainData);
-    }
+        terrain = GetComponent<Terrain>();
 
-    TerrainData GenerateTerrain(TerrainData terrainData)
-    {
+        TerrainData terrainData = terrain.terrainData;
+
         terrainData.heightmapResolution = width + 1;
         terrainData.size = new Vector3(width, height, length);
-        terrainData.SetHeights(0, 0, GenerateHeights());
 
-        return terrainData;
-    } // end GenerateTerrain()
+        heights = GenerateHeights();
+
+        path = new Path(width, length);
+        Vector2 center = new Vector2(width / 2, length / 2);
+
+        path.WindingPath(heights, new Vector2(0, length / 2), center, 3, 0.02f);
+        path.WindingPath(heights, new Vector2(width - 1, length / 2), center, 3, 0.02f);
+        path.WindingPath(heights, new Vector2(width / 2, 0), center, 3, 0.02f);
+
+        terrain.terrainData.SetHeights(0, 0, heights);
+
+        //PlaceTower(center);
+    }
 
     float[,] GenerateHeights()
     {
-        float[,] heightsArr = new float[width, length];
-        float randomSeed = Random.Range(0f, 9999f); // making a seed value to hold a random float and used to randomise terrain possibilites
 
-        //creating a nested for loop used to perform mathertically based randomisation to be applied to the Perlin Noise funtions 
-        //to create a 2D height array corresponding with the associated width and length values in the map grid 
-        for (int x = 0; x < width; x++)
+        float[,] h = new float[width + 1, length + 1];
+        float seed = Random.Range(0f, 9999f);
+
+        for (int x = 0; x <= width; x++)
         {
-            for (int z = 0; z < length; z++)
+            for (int z = 0; z <= length; z++)
             {
-                float xCoord = (x + randomSeed) / scale;
-                float zCoord = (z + randomSeed) / scale;
-
-                heightsArr[x, z] = Mathf.PerlinNoise(xCoord, zCoord);
+                float xCoord = (x + seed) / scale;
+                float zCoord = (z + seed) / scale;
+                h[x, z] = Mathf.PerlinNoise(xCoord, zCoord);
             }
         }
+        return h;
+    }
 
-        return heightsArr;
-    } // End GenerateHeights()
-}//Ends Perlin Terrain class
+   /* void PlaceTower(Vector2 center)
+    {
+        Vector3 worldPos = new Vector3(center.x, 0, center.y);
 
+        float y = terrain.SampleHeight(worldPos);
+        worldPos.y = y + 1.5f;
 
-/* References: 
-
-Brackeys: https://www.youtube.com/watch?v=bG0uEXV6aHQ&ab_channel=Brackeys
-DVS Devs: https://www.youtube.com/watch?v=1qSjCu8av7Q&ab_channel=DVSDevs%28DanVioletSagmiller%29
-Terrain Component Resources: https://discussions.unity.com/t/how-do-i-resize-terrain/177726
-                             https://www.youtube.com/watch?v=DbJB9534PZQ&ab_channel=SoloGameDev
-*/
+        Instantiate(towerPrefab, worldPos, Quaternion.identity);
+    }*/
+}

@@ -340,10 +340,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b61724756176ddb4a986d345802699f3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  width: 256
+  width: 128
   height: 20
-  length: 256
-  scale: 20
+  length: 128
+  scale: 70
 --- !u!154 &1412520188
 TerrainCollider:
   m_ObjectHideFlags: 0
@@ -362,7 +362,7 @@ TerrainCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_TerrainData: {fileID: 15600000, guid: b36dbd2c17cb025488bb2b80e0104c33, type: 2}
+  m_TerrainData: {fileID: 15600000, guid: c1eed6d55b270d742ac99ae0deaf8350, type: 2}
   m_EnableTreeColliders: 1
 --- !u!218 &1412520189
 Terrain:
@@ -373,7 +373,7 @@ Terrain:
   m_GameObject: {fileID: 1412520186}
   m_Enabled: 1
   serializedVersion: 6
-  m_TerrainData: {fileID: 15600000, guid: b36dbd2c17cb025488bb2b80e0104c33, type: 2}
+  m_TerrainData: {fileID: 15600000, guid: c1eed6d55b270d742ac99ae0deaf8350, type: 2}
   m_TreeDistance: 5000
   m_TreeBillboardDistance: 50
   m_TreeCrossFadeLength: 5
